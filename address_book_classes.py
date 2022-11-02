@@ -1,3 +1,4 @@
+import pickle
 from collections import UserDict
 from datetime import datetime
 
@@ -98,6 +99,11 @@ class Record:
 
 
 class AddressBook(UserDict):
+    def __init__(self):
+        super().__init__()
+
+        self.load_contacts_from_file()
+
     def add_record(self, record):
         self.data[record.name.value] = record
 
@@ -139,6 +145,17 @@ class AddressBook(UserDict):
 
         if page:
             yield page
+
+    def save_contacts_to_file(self):
+        with open('address_book.pickle', 'wb') as file:
+            pickle.dump(self.data, file)
+
+    def load_contacts_from_file(self):
+        try:
+            with open('address_book.pickle', 'rb') as file:
+                self.data = pickle.load(file)
+        except FileNotFoundError:
+            pass
 
 
 contacts_dict = AddressBook()
